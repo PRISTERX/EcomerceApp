@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import co.wilsonjavier.ecomerceapp.HomeScreen
+import co.wilsonjavier.ecomerceapp.LoginScreen
 import co.wilsonjavier.ecomerceapp.RegisterScreen
 
 class MainActivity : ComponentActivity(){
@@ -25,10 +27,13 @@ class MainActivity : ComponentActivity(){
                     modifier = Modifier.fillMaxWidth()
                 ){
                     composable("login"){
-                        MainActivity()
+                        LoginScreen(myNavController)
                     }
                     composable("register"){
                         RegisterScreen()
+                    }
+                    composable("home") {
+                        HomeScreen()
                     }
 
                 }
