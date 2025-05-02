@@ -1,5 +1,6 @@
 package co.wilsonjavier.ecomerceapp
 
+import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +32,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun RegisterScreen(){
+
+    val auth = Firebase.auth
+    val activity = LocalView.current.context as Activity
+
+    var inputName by remember { mutableStateOf("") }
+    var inputEmail by remember { mutableStateOf("") }
+    var inputPassword by remember { mutableStateOf("") }
+    var inputPasswordConfirmation by remember { mutableStateOf("") }
+
+    var nameError by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf() }
+    var passwordError by remember { mutableStateOf("") }
+    var passwordConfirmation by remember { mutableStateOf("") }
+
+    var registerError by remember { mutableStateOf("") }
+
+
+
+
     Scaffold { innerPadding ->
         Column (modifier = Modifier.padding(innerPadding).fillMaxSize().padding(horizontal = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,6 +108,16 @@ fun RegisterScreen(){
                         tint = Color(0xFFF9900)
                     )
                 },
+                supportingText = {
+                    if (passwordError.isNotEmpty()){
+                        Text(
+                            text = passwordError,
+                            color = Color.Red
+                        )
+                    }
+                },
+
+
                 label = {
                     Text(text = "Contraseña")
                 },
@@ -120,6 +154,9 @@ fun RegisterScreen(){
                         tint = Color(0xFFF9900)
                     )
                 },
+                supportingText = {
+                    if(nameError.isNotEmpty)
+                },
                 label = {
                     Text(text = "Nombre Completo")
                 },
@@ -127,7 +164,23 @@ fun RegisterScreen(){
             )
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = {},modifier = Modifier
+            Button(onClick = {
+                val isValidName = validateName(inputName).first
+                val isValidEmail = validateEmail(inputEmail).first
+                val isValidPassword = validatePassword(inputPassword).first
+                val isValidConfirmationPassword = validateConfirmPassword(inputPassword, inputPasswordConfirmation).first
+
+                nameError = validateName(inputName).second
+                emailError = validateEmail(inputEmail).second
+                passwordError = validatePassword(inputPassword).second
+                inputPasswordConfirmation = validateConfirmPassword(inputPassword,inputPasswordConfirmation)
+
+                if (isValidName && isValidEmail && isValidPassword && isValidConfirmationPassword){
+
+                }else{
+                    registerError = "Hubo un error en el register"
+                }
+            },modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
                 shape = RoundedCornerShape(12.dp),
